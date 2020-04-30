@@ -39,6 +39,18 @@ const CartProvider: React.FC = ({ children }) => {
     loadProducts();
   }, []);
 
+  const updateStorage = useCallback(async (): Promise<void> => {
+    await AsyncStorage.clear();
+    await AsyncStorage.setItem(
+      '@GoMarketplace:products',
+      JSON.stringify(products),
+    );
+  }, [products]);
+
+  useEffect(() => {
+    updateStorage();
+  }, [updateStorage]);
+
   const addToCart = useCallback(
     async product => {
       const productPersisted = products.find(p => p.id === product.id);
@@ -56,6 +68,7 @@ const CartProvider: React.FC = ({ children }) => {
         setProducts([...products, { ...product, quantity: 1 }]);
       }
     },
+
     [products],
   );
 
