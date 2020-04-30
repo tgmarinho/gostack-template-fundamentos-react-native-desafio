@@ -53,15 +53,17 @@ const CartProvider: React.FC = ({ children }) => {
 
   const addToCart = useCallback(
     async product => {
-      const productPersisted = products.find(p => p.id === product.id);
+      const productPersisted = products.find(
+        productFind => productFind.id === product.id,
+      );
 
       if (productPersisted) {
         setProducts(
-          products.map(p => {
-            if (p.id === productPersisted.id) {
-              return { ...p, quantity: p.quantity + 1 };
+          products.map(productMap => {
+            if (productMap.id === productPersisted.id) {
+              return { ...productMap, quantity: productMap.quantity + 1 };
             }
-            return p;
+            return productMap;
           }),
         );
       } else {
@@ -75,11 +77,11 @@ const CartProvider: React.FC = ({ children }) => {
   const increment = useCallback(
     async id => {
       setProducts(
-        products.map(prod => {
-          if (prod.id === id) {
-            return { ...prod, quantity: prod.quantity + 1 };
+        products.map(product => {
+          if (product.id === id) {
+            return { ...product, quantity: product.quantity + 1 };
           }
-          return prod;
+          return product;
         }),
       );
     },
@@ -88,13 +90,15 @@ const CartProvider: React.FC = ({ children }) => {
 
   const decrement = useCallback(
     async id => {
-      setProducts(
-        products.map(prod => {
-          if (prod.id === id && prod.quantity > 1) {
-            return { ...prod, quantity: prod.quantity - 1 };
-          }
-          return prod;
-        }),
+      await setProducts(
+        products
+          .map(product => {
+            if (product.id === id) {
+              return { ...product, quantity: product.quantity - 1 };
+            }
+            return product;
+          })
+          .filter(product => product.quantity >= 1),
       );
     },
     [products],
