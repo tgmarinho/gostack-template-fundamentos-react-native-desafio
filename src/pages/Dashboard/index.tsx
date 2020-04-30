@@ -30,14 +30,13 @@ interface Product {
 }
 
 const Dashboard: React.FC = () => {
-  const { addToCart, products: productPersisted } = useCart();
+  const { addToCart } = useCart();
 
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     async function loadProducts(): Promise<void> {
       const response = await api.get('/products');
-
       setProducts(response.data);
     }
 
